@@ -9,11 +9,21 @@ const createTransporter = () => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    requireTLS: true,
     auth: {
       user: emailUser,
       pass: emailPass,
     },
+    tls: {
+      rejectUnauthorized: false,
+    },
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
+    family: 4,
   });
 
   transporter.verify((error) => {
@@ -32,7 +42,7 @@ const sendOtpEmail = async (to, otp, purpose) => {
     const transporter = createTransporter();
 
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"SellUrOldBook" <${process.env.EMAIL_USER}>`,
       to,
       subject: `SellUrOldBook ${purpose} OTP`,
       html: `
