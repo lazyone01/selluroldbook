@@ -9,7 +9,9 @@ const sendOtpEmail = async (to, otp, purpose) => {
   }
 
   const transporter = nodemailer.createTransport({
-    service: "gmail",   // ← use service instead of manual host/port
+    host: "142.250.76.109", // ← Gmail SMTP hardcoded IPv4 (bypasses IPv6 DNS)
+    port: 465,
+    secure: true,
     auth: {
       user: emailUser,
       pass: emailPass,
@@ -17,7 +19,6 @@ const sendOtpEmail = async (to, otp, purpose) => {
     tls: {
       rejectUnauthorized: false,
     },
-    family: 4,
   });
 
   try {
