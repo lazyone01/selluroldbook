@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-const createTransporter = () => {
+const sendOtpEmail = async (to, otp, purpose) => {
   const emailUser = process.env.EMAIL_USER;
   const emailPass = process.env.EMAIL_APP_PASSWORD;
 
@@ -9,10 +9,7 @@ const createTransporter = () => {
   }
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    requireTLS: true,
+    service: "gmail",   // ← use service instead of manual host/port
     auth: {
       user: emailUser,
       pass: emailPass,
@@ -20,29 +17,12 @@ const createTransporter = () => {
     tls: {
       rejectUnauthorized: false,
     },
-    connectionTimeout: 30000,
-    greetingTimeout: 30000,
-    socketTimeout: 30000,
     family: 4,
   });
 
-  transporter.verify((error) => {
-    if (error) {
-      console.error("SMTP Config Error:", error);
-    } else {
-      console.log("SMTP Server Ready");
-    }
-  });
-
-  return transporter;
-};
-
-const sendOtpEmail = async (to, otp, purpose) => {
   try {
-    const transporter = createTransporter();
-
     await transporter.sendMail({
-      from: `"SellUrOldBook" <${process.env.EMAIL_USER}>`,
+      from: `"SellUrOldBook" <${emailUser}>`,
       to,
       subject: `SellUrOldBook ${purpose} OTP`,
       html: `
